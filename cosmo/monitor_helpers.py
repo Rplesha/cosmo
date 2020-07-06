@@ -11,7 +11,13 @@ def convert_day_of_year(date: Union[float, str]) -> Time:
     """Convert day of the year (defined as yyyy.ddd where ddd is the day number of that year) to an astropy Time object.
     Some important dates for the COS team were recorded in this format.
     """
-    return Time(datetime.datetime.strptime(str(date), '%Y.%j'), format='datetime')
+    return Time(
+         datetime.datetime.strptime(
+             f'{date:.3f}' if isinstance(date, float) else date,
+             '%Y.%j'
+         ),
+         format='datetime'
+    )
 
 
 def fit_line(x: Sequence, y: Sequence) -> Tuple[np.poly1d, np.ndarray]:
@@ -122,6 +128,9 @@ def get_osm_data(datamodel, detector: str) -> pd.DataFrame:
             sort=True,
             ignore_index=True
         )
+
+    if datamodel.new_data is None:
+        return data
 
     if not datamodel.new_data.empty:
         new_data = datamodel.new_data[datamodel.new_data.DETECTOR == detector].reset_index(drop=True)
