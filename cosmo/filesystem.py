@@ -227,7 +227,8 @@ class JitterFileData(list):
 
     def get_expstart(self):
         """Get the EXPSTART from a corresponding 'raw' file."""
-        possible_files = ('rawacq.fits.gz', 'rawtag.fits.gz', 'rawtag_a.fits.gz', 'rawtag_b.fits.gz')
+        possible_files = (#'rawacq.fits.gz', 'rawtag.fits.gz', 'rawtag_a.fits.gz', 'rawtag_b.fits.gz',
+                          'rawacq.fits', 'rawtag.fits', 'rawtag_a.fits', 'rawtag_b.fits')
 
         for filedata in self:
             filedata.setdefault('EXPSTART', 0)
@@ -238,10 +239,8 @@ class JitterFileData(list):
 
             for possible_file in possible_files:
                 co_file = os.path.join(os.path.dirname(filedata['FILENAME']), f'{exposure}_{possible_file}')
-
                 if not os.path.exists(co_file):
                     continue
-
                 with fits.open(co_file) as co:
                     filedata['EXPSTART'] = co[1].header['EXPSTART']
                     filedata['EXPTYPE'] = co[0].header['EXPTYPE']
